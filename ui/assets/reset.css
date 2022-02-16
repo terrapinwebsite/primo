@@ -1,0 +1,32 @@
+.primo-reset {
+  font-family: 'Satoshi';
+
+  /* resets */
+
+  li {
+    list-style: none;
+  }
+
+  button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  input {
+    border: 0;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  body {
+    margin: 0;
+  }
+}

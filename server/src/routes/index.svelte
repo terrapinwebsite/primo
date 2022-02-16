@@ -1,4 +1,7 @@
 <script lang="ts">
+  import Dashboard from 'ui/screens/Dashboard.svelte'
+
+
   import SignInNav from '$lib/components/SignInNav.svelte'
   import SiteFooter from '$lib/components/SiteFooter.svelte'
   import SiteThumbnail from '$lib/components/SiteThumbnail.svelte'
@@ -54,6 +57,37 @@
 
   let hoveredItem = null
 </script>
+
+
+<Dashboard 
+  sites={$sites}
+  buttons={[
+    {
+      icon: 'book',
+      label: 'Docs',
+      onclick: () => {
+        window.open('https://docs.primo.af', '_blank');
+      }
+    },
+    {
+      icon: 'gear',
+      label: 'Collaborators',
+      onclick: () => show({
+        id: 'INVITE_COLLABORATORS'
+      })
+    },
+    {
+      icon: 'gear',
+      label: 'Settings',
+      onclick: () => show({
+        id: 'USER_SETTINGS'
+      })
+    }
+  ]}
+  on:create={({detail:site}) => actions.sites.create(site)}
+  on:edit={({detail:site}) => editSite(site)}
+  on:delete={({detail:site}) => deleteSiteItem(site.id)}
+/>
 
 <main class="primo-reset">
   {#if $user.signedIn}

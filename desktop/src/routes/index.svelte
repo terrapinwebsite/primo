@@ -1,7 +1,7 @@
 <script lang="ts">
   import Dashboard from '../../../ui/screens/Dashboard.svelte'
-
   
+  import {goto} from '$app/navigation'
   import SignInNav from '$lib/components/SignInNav.svelte'
   import SiteFooter from '$lib/components/SiteFooter.svelte'
   import SiteThumbnail from '$lib/components/SiteThumbnail.svelte'
@@ -11,31 +11,37 @@
   import config from '../stores/config'
 
   let loading
-  function createSite() {
-    show({
-      id: 'SITE_CREATION',
-      props: {
-        onSuccess: (site) => {
-          $sites = [
-            ...$sites,
-            {
-              id: site.id,
-              name: site.name,
-              data: site,
-              deployments: [],
-              activeDeployment: null,
-            },
-          ]
-          window.location.href = site.id // goto is breaking
-          hide()
-          // setTimeout(() => {
-          //   // wait for file to be written
-          //   window.location.href = site.id // goto is breaking
-          //   hide()
-          // }, 500)
-        },
+  function createSite(site) {
+    $sites = [
+      ...$sites,
+      {
+        id: site.id,
+        name: site.name,
+        data: site,
+        deployments: [],
+        activeDeployment: null,
       },
-    })
+    ]
+    window.location.href = site.id // goto is breaking
+    // show({
+    //   id: 'SITE_CREATION',
+    //   props: {
+    //     onSuccess: (site) => {
+    //       $sites = [
+    //         ...$sites,
+    //         {
+    //           id: site.id,
+    //           name: site.name,
+    //           data: site,
+    //           deployments: [],
+    //           activeDeployment: null,
+    //         },
+    //       ]
+    //       window.location.href = site.id // goto is breaking
+    //       hide()
+    //     },
+    //   },
+    // })
   }
 
   function connectToServer() {
@@ -59,11 +65,30 @@
   let hoveredItem = null
 </script>
 
+
 <Dashboard 
   sites={$sites.map(s => s.data)}
-  on:create={createSite}
-  on:edit={(site) => {}}
-  on:delete={(site) => deleteSiteItem(site.id)}
+  buttons={[
+    {
+      icon: 'book',
+      label: 'Docs',
+      onclick: () => {
+        window.open('https://docs.primo.af', '_blank');
+      }
+    },
+    {
+      icon: 'gear',
+      label: 'Settings',
+      onclick: () => show({
+        id: 'USER_SETTINGS'
+      })
+    }
+  ]}
+  on:create={({detail:site}) => createSite(site)}
+  on:edit={({detail:site}) => {
+    console.log('edited')
+  }}
+  on:delete={({detail:site}) => deleteSiteItem(site.id)}
 />
 
 

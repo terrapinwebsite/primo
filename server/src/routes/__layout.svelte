@@ -65,3 +65,65 @@
 
 <Modal />
 <slot />
+
+<style global lang="postcss">
+
+  .primo-reset {
+    font-family: 'Satoshi';
+
+
+    --color-accent: #EE4645;
+
+    --color-bg-1: #18191A;
+    --color-bg-2: #242526;
+    --color-bg-3: #3E4041;
+
+    --color-text-1: #FFFFFF;
+    --color-text-2: #E2E4E9;
+    --color-text-3: #A2A6A9;
+    --color-text-4: #BEBFC0;
+    --color-text-5: #D7D9DA;
+
+    --color-focus: #BEBFC0;
+    --color-hover: #F16A69;
+
+    --border-radius: 4px;
+
+
+
+    /* resets */
+
+    ul {
+      margin: 0; /* reset */
+      padding: 0; /* reset */
+    }
+
+    li {
+      list-style: none;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    input {
+      border: 0;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    body {
+      margin: 0;
+    }
+  }
+
+</style>

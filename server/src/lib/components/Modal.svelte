@@ -44,14 +44,14 @@
     SITE_CREATION: CreateSite,
     USER_SETTINGS: UserSettings,
     COLLABORATION: Collaboration,
-    INVITE_COLLABORATORS: InviteCollaborators,
+    INVITE_COLLABORATORS: InviteCollaborators
   }
 
   let activeModal = modals[$type.id]
   $: showModal($type.id)
   async function showModal(typeID) {
-    const modal = modals[typeID]
     activeModal = modals[typeID]
+    console.log({activeModal, typeID})
   }
 
   async function hideModal() {

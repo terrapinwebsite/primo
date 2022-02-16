@@ -13,7 +13,6 @@
   let loaded = false
 
   window.addEventListener('message', ({data}) => {
-    console.log({data})
     if (data === 'IFRAME_LOADED') {
       resizePreview()
       loaded = true

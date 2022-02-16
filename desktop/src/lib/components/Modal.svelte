@@ -40,13 +40,12 @@
 
   const modals = {
     SITE_CREATION: CreateSite,
-    USER_SETTINGS: UserSettings,
+    USER_SETTINGS: UserSettings
   }
 
   let activeModal = modals[$type.id]
   $: showModal($type.id)
   async function showModal(typeID) {
-    const modal = modals[typeID]
     activeModal = modals[typeID]
   }
 
