@@ -28,7 +28,7 @@
 <main in:fade>
   
   <form on:submit|preventDefault={createAccount}>
-    <TextField autofocus label="Email Address" bind:value={email} placeholder="firstlast@gmail.com" variants="my-4" />
+    <TextField label="Email Address" bind:value={email} placeholder="firstlast@gmail.com" variants="my-4" />
     <TextField label="Password" type="password" bind:value={password} placeholder="hunter2" variants="mb-4" />
     <div class="text-sm text-gray-700 p-4 bg-gray-100 mb-6">
       This is the account you'll use to administrate this primo server. Make sure you don't lose access to this email address or you'll lose your server too.

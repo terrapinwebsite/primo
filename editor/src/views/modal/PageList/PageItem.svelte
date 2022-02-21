@@ -82,7 +82,6 @@
         <TextInput
           bind:value={name}
           id="page-label"
-          autofocus={true}
           label="Page Label"
           placeholder="About Us"
         />

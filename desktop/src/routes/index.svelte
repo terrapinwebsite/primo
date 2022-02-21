@@ -88,7 +88,6 @@
                         class="reset-input"
                         type="text"
                         bind:value={site.name}
-                        autofocus
                       />
                     </form>
                   {:else}

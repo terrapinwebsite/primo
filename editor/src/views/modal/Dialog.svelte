@@ -28,7 +28,7 @@
       <div class="message">Enter URL</div>
       <form on:submit|preventDefault={() => onSubmit(value)}>
         <!-- svelte-ignore a11y-autofocus -->
-        <input type="url" bind:value autofocus>
+        <input type="url" bind:value>
       </form>
     {:else if component === 'FEEDBACK'}
       <Feedback />

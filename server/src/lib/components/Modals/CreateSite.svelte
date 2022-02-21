@@ -65,7 +65,6 @@
     <form on:submit|preventDefault={createSite}>
       <div class="name-url">
         <TextField
-          autofocus={true}
           label="Site Name"
           on:input={validateUrl}
           bind:value={siteName}

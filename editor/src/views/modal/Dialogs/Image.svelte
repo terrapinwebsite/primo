@@ -154,7 +154,6 @@
           <span>URL</span>
           <!-- svelte-ignore a11y-autofocus -->
           <input
-            autofocus
             on:input={(e) => {
               const { value } = e.target
               imagePreview = value
