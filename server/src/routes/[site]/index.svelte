@@ -5,11 +5,9 @@
 	export async function load({ params }) {
 		// workaround: siteID/index loads index.svelte in production
 		// this is to prevent redirect loop
-		return params.page ? {
-      status: 200
-		} : {
-			redirect: `/${params.site}/index`, // load [site]/[...page].svelte
+		return {
+			redirect: `/${params.site}/home`, // load [site]/[...page].svelte
       status: 302
-		};
+		}
 	}
 </script>
