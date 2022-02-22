@@ -47,7 +47,7 @@
 
   $: $pageId = getPageId($pageStore.params.page);
   function getPageId(pagePath:string = ''): string {
-    if (pagePath === '') pagePath = 'index'
+    if (pagePath === 'home') pagePath = 'index'
     const [root, child] = pagePath.split('/');
     return child ? `${root}/${child}` : root;
   }
