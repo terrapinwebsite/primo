@@ -34,7 +34,7 @@ describe('Component IDE & CMS', () => {
     it('Modify component fields IDE', () => {
         cy.get('button#tab-fields').click();
         cy.get('#field-0 .input:nth(0)').clear().type('Header');
-        cy.get('span').contains('Draft').click();
+        cy.get('button').contains('Draft').click();
     });
 
     it('switch to IDE', () => {
