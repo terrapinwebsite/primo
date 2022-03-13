@@ -33,6 +33,7 @@
     return key.replace(/-/g, '_').replace(/ /g, '_').toLowerCase();
   }
 
+  $: console.log({field})
 </script>
 
 <EditField
@@ -82,6 +83,9 @@
 {/each}
 {#if field.type === 'select'}
   <SelectField {field} {level} />
+{/if}
+{#if field.type === 'custom'}
+  <CustomField {field} />
 {/if}
 {#if field.type === 'repeater' || field.type === 'group'}
   <button

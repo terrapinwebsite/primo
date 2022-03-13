@@ -474,7 +474,9 @@
                     saveLocalContent()
                   }}
                   this={getFieldComponent(field)}
-                  {field} />
+                  {field} 
+                  {fields}  
+                />
               </div>
             {:else if getFieldComponent(field)}
               <div class="invalid-field">

@@ -36,31 +36,42 @@
     modal.hide()
   }
 
+  // Having trouble with this: 
+  // passed in buildStaticPage was getting stuck
+  // could have been for other reason
+  async function runBuildScript(files) {
+    const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    const BuildScript = new AsyncFunction('bundle', `
+        return bundle
+    `)
+    const BuildOutput = await BuildScript(files)
+    console.log({BuildOutput})
+    return BuildOutput
+  }
+
   let deployment
   let activeDeployment
   async function publishToHosts() {
-    loading = true
+    // loading = true
 
-    const files = (await buildSiteBundle($site)).map((file) => {
-      return {
-        file: file.path,
-        data: file.content,
-      }
-    })
+    console.log('building')
+    const files = await buildSiteBundle($site)
+    console.log({files})
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
+    const modifiedFiles = await runBuildScript(uniqueFiles)
 
-    sites.save($site)
-    const res = await sites.publish({
-      siteID,
-      host: $hosts[0],
-      files: uniqueFiles
-    })
+    // sites.save($site)
+    // const res = await sites.publish({
+    //   siteID,
+    //   host: $hosts[0],
+    //   files: uniqueFiles
+    // })
 
-    if (!res) {
-      alert('There was an error publishing your site')
-    } else {
-      deployment = res
-    }
+    // if (!res) {
+    //   alert('There was an error publishing your site')
+    // } else {
+    //   deployment = res
+    // }
 
     loading = false
 

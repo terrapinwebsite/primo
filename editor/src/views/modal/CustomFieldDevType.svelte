@@ -6,6 +6,8 @@
 
   export let field;
 
+  $: console.log({field})
+
   let c;
   async function buildComponent(source) {
     const data = convertFieldsToData(
@@ -31,6 +33,9 @@
           target: element,
           props: data,
         });
+        c.$on('update', e => {
+          console.log('update', e)
+        })
       } catch (e) {
         console.error(e.toString());
       }
@@ -44,7 +49,7 @@
 
 </script>
 
-<CodeMirror bind:value={field.value} />
+<CodeMirror bind:value={field.value} style="height: auto" />
 {#if error}
   <pre>
     {@html error}
