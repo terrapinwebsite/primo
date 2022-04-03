@@ -1,6 +1,6 @@
 <script>
   import { fade } from 'svelte/transition';
-  import { find } from 'lodash-es';
+  import { find, isEqual, cloneDeep } from 'lodash-es';
   import Block from './Layout/Block.svelte';
   import Spinner from '../../ui/misc/Spinner.svelte';
   import {
@@ -102,36 +102,49 @@
 
   let htmlHead = '';
   let htmlBelow = '';
+  let cachedPageCode
+  let cachedSiteCode
   $: setPageHTML({
     pageCode: $pageCode,
     siteCode: $siteCode
   });
   async function setPageHTML({ pageCode, siteCode }) {
-    const css = await processCSS(siteCode.css + pageCode.css);
-    const data = convertFieldsToData(getAllFields());
-    const [head, below] = await Promise.all([
-      processCode({
-        code: {
-          html: `<svelte:head>
-            ${siteCode.html.head}${pageCode.html.head}
-            ${wrapInStyleTags(css)}
-          </svelte:head>`,
-          css: '',
-          js: '',
-        },
-        data,
-      }),
-      processCode({
-        code: {
-          html: siteCode.html.below + pageCode.html.below,
-          css: '',
-          js: '',
-        },
-        data,
-      }),
-    ]);
-    htmlHead = !head.error ? head.html : '';
-    htmlBelow = !below.error ? below.html : '';
+    if (!isEqual(cachedPageCode, pageCode) || !isEqual(cachedSiteCode, siteCode)) {
+      console.log('NOT EQUAL', cloneDeep(pageCode), cloneDeep(cachedPageCode))
+      cachedPageCode = cloneDeep(pageCode)
+      cachedSiteCode = cloneDeep(siteCode)
+      pageMounted = false
+      const css = await processCSS(siteCode.css + pageCode.css);
+      const data = convertFieldsToData(getAllFields());
+      const [head, below] = await Promise.all([
+        processCode({
+          code: {
+            html: `<svelte:head>
+              ${siteCode.html.head}${pageCode.html.head}
+              ${wrapInStyleTags(css)}
+            </svelte:head>`,
+            css: '',
+            js: '',
+          },
+          data,
+        }),
+        processCode({
+          code: {
+            html: siteCode.html.below + pageCode.html.below,
+            css: '',
+            js: '',
+          },
+          data,
+        }),
+      ]);
+      console.log({htmlHead, htmlBelow, head})
+      htmlHead = !head.error ? head.html : '';
+      htmlBelow = !below.error ? below.html : '';
+      console.log({htmlHead, htmlBelow})
+      pageMounted = true
+    } else {
+      console.log('EQUAL', pageCode, cachedPageCode)
+    }
   }
 
   // Fade in page when all components mounted
@@ -142,10 +155,12 @@
   ).length;
 
   $: if (element && componentsMounted >= nComponents) {
-    pageMounted = true;
+    // pageMounted = true;
   } else if (componentsMounted < nComponents) {
-    pageMounted = false;
+    // pageMounted = false;
   }
+
+  $: console.log('pageMounted', pageMounted);
 
   // reset pageMounted on page change
   $: if ($navigating && ($navigating.from.path !== $navigating.to.path)) {
@@ -154,6 +169,8 @@
   }
 
   $: pageIsEmpty = $sections.length <= 1 && $sections.length !== 0 && $sections[0]['type'] === 'options'
+
+  $: console.log({htmlHead})
 </script>
 
 <svelte:head>
@@ -168,6 +185,7 @@
 <div
   bind:this={element}
   class="primo-page being-edited"
+  class:fadein={pageMounted}
   lang={$locale}
 >
   {#if pageExists}
@@ -208,9 +226,13 @@
     --Spinner-color-opaque: rgba(248, 68, 73, 0.2);
   }
   .primo-page {
+    opacity: 0;
     border-top: 0;
-    transition: border-top 0.2s; /* match transition time in Toolbar.svelte */
-    transition-delay: 1s;
+
+    &.fadein {
+      transition: 0.1s opacity;
+      opacity: 1;
+    }
   }
 
   .empty-state {

@@ -340,11 +340,11 @@
           transition: opacity 0.1s, filter 0.1s;
 
           &.active {
-            filter: brightness(1.1);
+            filter: brightness(1.05);
           }
 
           &.inactive {
-            opacity: 0.5;
+            opacity: 0.9;
           }
 
           .site-link {

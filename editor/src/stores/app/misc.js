@@ -17,3 +17,7 @@ export const loadingSite = writable(true)
 export const onMobile = writable(false)
 
 export const locale = writable('en')
+
+export const activeTab = writable({ index: 0, data: null })
+
+export const tabs = writable([])

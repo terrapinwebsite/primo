@@ -1,12 +1,16 @@
 <script>
   import { onMount, createEventDispatcher, getContext } from 'svelte';
-  import {find as _find} from 'lodash-es'
+  import {fade} from 'svelte/transition'
+  import {goto} from '$app/navigation';
+  import {find as _find, cloneDeep} from 'lodash-es'
   import ToolbarButton from './ToolbarButton.svelte';
   import LocaleSelector from './LocaleSelector.svelte'
   import { PrimoButton } from '../../components/buttons';
-  import { name } from '../../stores/data/draft';
-  import { showingIDE, userRole } from '../../stores/app';
+  import { name, site } from '../../stores/data/draft';
   import { id as pageID } from '../../stores/app/activePage';
+  import { showingIDE, userRole } from '../../stores/app';
+  import { activeTab, tabs } from '../../stores/app/misc';
+  import Icon from '@iconify/svelte';
   import { onMobile } from '../../stores/app/misc';
   import modal from '../../stores/app/modal'
   const dispatch = createEventDispatcher();
@@ -19,20 +23,68 @@
     mounted = true;
   });
 
+  $: updateModal($modal) 
+  function updateModal(modal){
+    console.log('Setting')
+    $tabs = $tabs.map((t, i) => i === $activeTab.index ? ({
+      ...t,
+      modal: cloneDeep(modal)
+    }) : t)
+  }
+
+  $: console.log($tabs)
+
 </script>
 
-<div id="primo-toolbar-overlay">
-  <div>
-    {$name} <span>/{$pageID === 'index' ? '' : $pageID}</span>
-  </div>
+<div class="primo-toolbar-overlay primo-reset">
+  {#each $tabs as tab, i}
+    {#if $activeTab.index === i}
+      <div class="active-site">
+        {#if $tabs.length > 1}
+          <button in:fade={{ duration: 200 }} on:click={() => {
+            $tabs = $tabs.filter((t) => t.index !== i).map((t, i) => ({ ...t, index: i }));
+            $activeTab = $tabs[0]
+          }}><Icon icon="bi:x" /></button>
+        {/if}
+        <span class="site-name">{tab.data.name}</span>
+        <span class="page-id">/{tab.page === 'index' ? '' : tab.page}</span>
+      </div>
+    {:else}
+      <button on:click={() => {
+        modal.hide()
+        $activeTab = cloneDeep(tab)
+        if (tab.page) {
+          $pageID = tab.page
+        }
+      }}>
+        <span>{tab.data.name}</span>
+        <span class="page-id">/{tab.page === 'index' ? '' : tab.page}</span>
+      </button>
+    {/if}
+  {/each}
+  <button aria-label="New tab" on:click={() => {
+    console.log(cloneDeep($site))
+    modal.hide()
+    $tabs = [
+      ...$tabs,
+      {
+        index: $tabs.length,
+        data: $site,
+        modal: cloneDeep($modal),
+        page: $pageID
+      }
+    ]
+    $activeTab = $tabs[$tabs.length-1]
+  }}>
+    <Icon icon="mdi:plus" />
+  </button>
 </div>
 <nav
 role="navigation"
 aria-label="toolbar"
 id="primo-toolbar"
 class="primo-reset"
-bind:this={element}
-class:mounted>
+bind:this={element}>
 <div class="menu-container">
   <div class="left">
     {#if !getContext('hidePrimoButton')}
@@ -107,32 +159,52 @@ class:mounted>
 
 
 <style lang="postcss">
-  #primo-toolbar-overlay {
-    display: block !important;
+  .primo-toolbar-overlay {
+    display: flex !important;
     height: 30px;
     -webkit-app-region: drag;
     background-color: var(--color-codeblack);
     user-select: none;
-    border-bottom: 1px solid var(--color-gray-9);
+    border-bottom: 1px solid var(--color-gray-8);
     z-index: 999999999; /* should be above #primo-toolbar */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    background: rgba(0,0,0,0.2);
 
-    div {
-      color: var(--color-gray-3);
+    button, .active-site {
+      color: var(--color-gray-2);
       font-size: 0.75rem;
       display: flex;
       align-items: center;
-      height: 100%;
-      padding: 0.5rem 1rem;
-      
-      span {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      border-bottom: 2px solid transparent;
+      transition: 0.2s border-color;
+
+      .page-id {
         margin-left: 0.25rem;
         color: var(--color-gray-5);
       }
 
+      .new-tab {
+        padding-left: 0.25rem;
+      }
+    }
+
+    .active-site {
+      border-color: white;
+      color: white;
+
+      button {
+        margin-left: -0.75rem;
+        color: var(--color-gray-3);
+
+        &:hover {
+          color: white;
+        }
+      }
     }
   }
   
@@ -140,16 +212,9 @@ class:mounted>
     position: fixed;
     left: 0;
     right: 0;
-    top: -10rem;
+    top: 0;
     z-index: 99999999;
     padding-top: 30px;
-    transition: 0.2s top;
-    transition-delay: 0.5s;
-    will-change: top;
-
-    &.mounted {
-      top: 0;
-    }
   }
 
   .left {

@@ -36,6 +36,7 @@ const modal_cleanup = () => {
 }
 
 export default {
+  set: store.set,
   show: (type, componentProps = {}, modalOptions = {}) => {
     const typeToShow = getModalType(type, componentProps, modalOptions)
     modal_startup()

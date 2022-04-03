@@ -53,6 +53,17 @@
 
   let localComponent:SymbolType = cloneDeep(component) // local copy of component to modify & save 
   let localContent = component.type === 'symbol' ? {} : getComponentContent($content) // local copy of component content to modify & save
+  $: setComponent(component) 
+
+  function setComponent(component) {
+    console.log('yes', component)
+    localComponent = cloneDeep(component)
+    localContent = component.type === 'symbol' ? {} : getComponentContent($content)
+    rawHTML = localComponent.code.html
+    rawCSS = localComponent.code.css
+    rawJS = localComponent.code.js
+    fields = localComponent.fields
+  }
 
   // component data w/ page/site data included (for compilation)
   $: data = {

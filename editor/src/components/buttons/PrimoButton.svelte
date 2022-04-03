@@ -4,7 +4,7 @@
   import Spinner from '../../components/misc/Spinner.svelte';
   import PrimoLogo from '../svg/PrimoLogo.svelte';
   import DropdownButton from './DropdownButton.svelte';
-  import { saved } from '../../stores/app/misc';
+  import { saved, tabs, activeTab } from '../../stores/app/misc';
 
   export let variants = '';
 
@@ -15,6 +15,15 @@
       e.preventDefault();
       window.alert(`Save your changes before navigating away from your site`);
     }
+  }
+
+  function toggleSite({detail}) {
+    showingDropdown = !showingDropdown
+    console.log({detail})
+    $tabs = $tabs.map(tab => tab.index === $activeTab.index ? ({
+      ...tab,
+      data: detail.data
+    }) : tab)
   }
 </script>
 
@@ -39,7 +48,7 @@
     {#each $dropdown as button}
       <li class="xyz-in">
         {#if button.component}
-          <svelte:component this={button.component} {...button.props} on:toggle={() => showingDropdown = !showingDropdown} />
+          <svelte:component this={button.component} {...button.props} on:toggle={toggleSite} />
         {:else}
           <DropdownButton {button} />
         {/if}

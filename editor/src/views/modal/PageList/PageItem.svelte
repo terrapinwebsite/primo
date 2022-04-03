@@ -7,6 +7,7 @@
   import Preview from '../../../components/misc/Preview.svelte';
 
   import modal from '../../../stores/app/modal';
+  import {activeTab, tabs} from '../../../stores/app/misc';
   import { buildStaticPage } from '../../../stores/helpers';
   import { site } from '../../../stores/data/draft';
   import { page as pageStore } from '$app/stores';
@@ -23,9 +24,9 @@
   }
 
   // Svelte bug: it takes a second to handle links properly (i.e. reloads page when clicked shortly after mounting)
-  // workaround: manage site from [...site].svelte instead of across index.svelte and [...site.svelte] 
   function openPage(e) {
     modal.hide();
+    $tabs = $tabs.map((t, i) => i === $activeTab.index ? ({ ...t, page: page.id }) : t);
   }
 
   let editingPage = false;

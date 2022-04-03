@@ -25,6 +25,8 @@
   export let debounce = false;
   export let selection = 0;
 
+  let currentValue = value
+
   const language = getLanguage(mode);
 
   var Editor;
@@ -34,7 +36,35 @@
     },
     doc: prefix + value,
     extensions: [
-      autocompletion(),
+      autocompletion({
+        // override: [ 
+        //   (context) => {
+        //     let full = context.matchBefore(/\w*/)
+        //     let word = context.matchBefore(/(s\-)\w*/) 
+        //     console.log({full, word})
+        //     // if (word.from == word.to && !context.explicit) return null
+        //     if (!word) return null
+        //     return {
+        //       from: word.from,
+        //       to: word.to,
+        //       options: [
+        //         {
+        //           label: "s-if-block", 
+        //           type: "text", 
+        //           info: `Conditionally render with 'Switch' field`, 
+        //           apply: `{#if condition}\n\n{/if}`
+        //         },
+        //         {
+        //           label: "s-each-block", 
+        //           type: "text", 
+        //           info: `Loop over a repeater field`, 
+        //           apply: `{#each items as item}\n\n<!-- <li>{item.property}</li> -->\n\n{/each}`
+        //         }
+        //       ]
+        //     }
+        //   }
+        // ]
+      }),
       languageConf.of(language),
       keymap.of([
         standardKeymap,
@@ -91,8 +121,8 @@
       ]),
       EditorView.updateListener.of((view) => {
         if (view.docChanged) {
-          const newValue = view.state.doc.toString();
-          value = newValue.replace(prefix, '');
+          currentValue = view.state.doc.toString();
+          value = currentValue.replace(prefix, '');
           if (debounce) {
             slowDebounce([dispatchChanges, value]);
           } else {
@@ -141,6 +171,20 @@
     return formatted;
   }
 
+  $: Editor && updateValue(value)
+
+  // handle changes when passed-in value changes
+  function updateValue(value) {
+    console.log(value, currentValue)
+    if (value !== currentValue) {
+      Editor.dispatch({
+        changes: [
+          { from: 0, to: Editor.state.doc.length, insert: value },
+        ],
+      });
+    }
+  }
+
   onMount(async () => {
     Editor = new EditorView({
       state,
@@ -165,19 +209,44 @@
 
 <div bind:this={element} class="codemirror-container {mode}" {style}>
   <div in:fade={{ duration: 200 }} bind:this={editorNode} />
+  <a class="docs" target="blank" href="https://docs.primo.af/development">
+    <span>Docs</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+      <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+    </svg>
+  </a>
 </div>
 
-<!-- {#if docs}
-  <a target="blank" href="{docs}" class="z-10 text-xs pointer-events-auto flex items-center absolute bottom-0 right-0 h-auto text-gray-100 py-1 px-3 m-1 bg-gray-900 hover:bg-primored transition-colors duration-200">
-    <i class="fas fa-external-link-alt mr-1"></i>
-    <span>Docs</span>
-  </a>
-{/if} -->
 <style lang="postcss">
   .codemirror-container {
+    position: relative;
     width: 100%;
     overflow-x: scroll;
     font-family: 'Fira Code', 'Courier New', sans-serif !important;
-    height: calc(100vh - 9.5rem);
+    height: calc(100vh - 10rem);
+  }
+  .docs {
+    position: sticky;
+    bottom: 0.25rem;
+    left: 100%;
+    margin-right: 0.25rem;
+    background: var(--color-gray-9);
+    transition: 0.1s background;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    display: inline-flex;
+
+    span {
+      margin-right: 0.25rem;
+    }
+
+    svg {
+      width: 0.75rem;
+    }
+
+    &:hover {
+      background: var(--color-gray-8);
+    }
   }
 </style>

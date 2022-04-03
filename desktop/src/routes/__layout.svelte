@@ -69,7 +69,7 @@
     z-index: 1;
   }
 
-  #primo-toolbar-overlay > div {
+  .primo-toolbar-overlay {
     padding-left: 5rem !important;
   }
 

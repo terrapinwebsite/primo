@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { find, some, isEqual } from 'lodash-es';
+  import { find, some, isEqual, cloneDeep } from 'lodash-es';
   import * as Mousetrap from 'mousetrap';
 
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
@@ -12,6 +12,7 @@
 
   import { id as pageId, sections, fields, code } from './stores/app/activePage';
   import { userRole } from './stores/app';
+  import { activeTab, tabs } from './stores/app/misc';
   import {
     saved,
     saving as savingStore,
@@ -21,7 +22,7 @@
   import { DEFAULTS, Site } from './const';
   import {resetActivePage} from './stores/helpers'
 
-  import { pages } from './stores/data/draft';
+  import { site, pages } from './stores/data/draft';
   import { site as draft } from './stores/data/draft';
   import { hydrateSite } from './stores/actions';
   import { page as pageStore } from '$app/stores';
@@ -34,7 +35,20 @@
   $: $savingStore = saving;
   $: $userRole = role;
 
+  $: changeTab($activeTab)
+  
+  function changeTab(tab) {
+    hydrateSite(tab.data);
+    if (tab.modal) {
+      modal.show(tab.modal.type, tab.modal.componentProps, tab.modal)
+    }
+  }
+
   function saveSite(): void {
+    $tabs = $tabs.map(tab => tab.index === $activeTab.index ? ({
+      ...tab,
+      data: cloneDeep($site),
+    }) : tab)
     dispatch('save', $draft);
   }
 
@@ -43,6 +57,16 @@
   $: if (!isEqual(cachedData, data)) {
     cachedData = data;
     hydrateSite(data);
+    if (data.name && $tabs.length === 0) {
+      $tabs = [
+        {
+          index: 0,
+          data,
+          modal: cloneDeep($modal),
+          page: 'index'
+        }
+      ]
+    }
   }
 
   $: $pageId = getPageId($pageStore.params.page);

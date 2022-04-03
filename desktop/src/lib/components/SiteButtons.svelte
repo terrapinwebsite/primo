@@ -9,14 +9,14 @@
 
   const { saved } = stores
 
-  function warn(e) {
+  function warn(e, site) {
     if (!$saved) {
       window.alert(
         `Save your site before navigating away so you don't lose your changes`
       )
       e.preventDefault()
     } else {
-      dispatch('toggle')
+      dispatch('toggle', site)
     }
   }
 
@@ -26,7 +26,7 @@
 <ul class="primo-reset" xyz="fade stagger stagger-2">
   {#each featuredSites as site (site.id)}
     <li class="site-item xyz-in">
-      <a on:click={warn} href="/{site.id}">
+      <a on:click={(e) => warn(e, site)} href="/{site.id}">
         <div class="thumbnail">
           <SiteThumbnail site={site.data} />
         </div>

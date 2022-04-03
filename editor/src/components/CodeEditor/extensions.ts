@@ -14,7 +14,38 @@ import { defaultHighlightStyle } from '@codemirror/highlight';
 import { lintKeymap } from '@codemirror/lint';
 import {html} from "@codemirror/lang-html"
 import {css} from "@codemirror/lang-css"
-import {javascript} from "@codemirror/lang-javascript"
+import {javascript, javascriptLanguage} from "@codemirror/lang-javascript"
+
+const globalJavaScriptCompletions = javascriptLanguage.data.of({
+  autocomplete: (context) => {
+    console.log({context})
+    let full = context.matchBefore(/\w*/)
+    let word = context.matchBefore(/(s\-)\w*/) 
+    console.log({full, word})
+    // if (word.from == word.to && !context.explicit) return null
+    if (!word) return null
+    return {
+      from: word.from,
+      to: word.to,
+      options: [
+        {
+          label: "s-if-block", 
+          type: "text", 
+          info: `Conditionally render with 'Switch' field`, 
+          apply: `{#if condition}\n\n{/if}`
+        },
+        {
+          label: "s-each-block", 
+          type: "text", 
+          info: `Loop over a repeater field`, 
+          apply: `{#each items as item}\n\n<!-- <li>{item.property}</li> -->\n\n{/each}`
+        }
+      ]
+    }
+  }
+})
+
+console.log({globalJavaScriptCompletions})
 
 export function getLanguage(mode) {
   return {
