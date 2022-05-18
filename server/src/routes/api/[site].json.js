@@ -58,10 +58,11 @@ export async function post(event) {
     } else if (action === 'PUBLISH') {
       const { siteID, files, host } = payload
       // get active_deployment from db
-      const {data} = await supabaseAdmin.from('hosts').select('*').eq('name', host)
+      const {data} = await supabaseAdmin.from('hosts').select('*').eq('name', host.name)
+      console.log({host})
       const deployment = await publishSite({
         siteID: siteID,
-        host: data[0],
+        host,
         files: files,
         activeDeployment: null
       })

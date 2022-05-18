@@ -5,6 +5,8 @@ import JSZip from 'jszip'
 export async function publishSite({ siteID, host, files, activeDeployment }) {
   let deployment
 
+  console.log({siteID, host})
+
   try {
     if (host.name === 'vercel') {
       const { data } = await axios

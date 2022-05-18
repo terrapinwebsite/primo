@@ -49,12 +49,16 @@
     })
     const uniqueFiles = uniqBy(files, 'file') // modules are duplicated
 
+    console.log({uniqueFiles}, $hosts)
+
     sites.save($site)
     const res = await sites.publish({
       siteID,
       host: $hosts[0],
       files: uniqueFiles
     })
+
+    console.log({res})
 
     if (!res) {
       alert('There was an error publishing your site')
@@ -68,6 +72,8 @@
   }
 
   async function buildSiteBundle(site) {
+
+    console.log('getting pages')
     
     const pages = await Promise.all([
       ...site.pages.map((page) => buildPageTree({ page, site })),
@@ -77,15 +83,19 @@
       // })),
     ])
 
-    return buildSiteTree(pages, site)
-
+    console.log('starting')
+    const siteTree = await buildSiteTree(pages, site)
+    console.log({siteTree})
+    return siteTree
     async function buildPageTree({ page, site }) {
       const { id } = page
+      console.log('building')
       const { html, modules } = await buildStaticPage({
         page,
         site,
         separateModules: true,
       })
+      console.log('done')
       const formattedHTML = await beautify.html(html)
 
       return await Promise.all([
