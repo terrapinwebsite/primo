@@ -1,8 +1,8 @@
 import _ from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid';
 import { createUniqueID } from "$lib/editor/utilities";
-import { getPlaceholderValue, getEmptyValue } from '$lib/editor/utils'
-import showdown from '$lib/editor/libraries/showdown/showdown.min.js'
+import { getPlaceholderValue, getEmptyValue } from 'primo-editor/utils'
+import showdown from 'primo-editor/libraries/showdown/showdown.min.js'
 import showdownHighlight from 'showdown-highlight'
 export const converter = new showdown.Converter({
   extensions: [showdownHighlight()],

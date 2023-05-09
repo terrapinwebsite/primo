@@ -1,16 +1,16 @@
 <script>
   import { onMount, createEventDispatcher, tick } from 'svelte'
   const dispatch = createEventDispatcher()
-  import modal from '$lib/editor/stores/app/modal'
-  import { hoveredBlock, showingIDE } from '$lib/editor/stores/app/misc'
+  import modal from 'primo-editor/stores/app/modal'
+  import { hoveredBlock, showingIDE } from 'primo-editor/stores/app/misc'
   import { mouse_position } from '$lib/stores'
   import { page } from '$app/stores'
   import { draggable } from '@neodrag/svelte'
-  import { positions } from '$lib/editor/views/editor/Layout/ComponentNode.svelte'
+  import { positions } from 'primo-editor/views/editor/Layout/ComponentNode.svelte'
   import MenuPopup from '$lib/components/MenuPopup.svelte'
   import IconButton from '$lib/components/IconButton.svelte'
   import Block from './BlockItem.svelte'
-  import sections from '$lib/editor/stores/data/sections'
+  import sections from 'primo-editor/stores/data/sections'
 
   export let symbol
   export let controls_enabled = true

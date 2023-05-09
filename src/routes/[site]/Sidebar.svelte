@@ -3,17 +3,17 @@
   import fileSaver from 'file-saver'
   import axios from 'axios'
   import { page } from '$app/stores'
-  import { hoveredBlock } from '$lib/editor/stores/app/misc'
-  import site from '$lib/editor/stores/data/site'
-  import sections from '$lib/editor/stores/data/sections'
-  import symbols from '$lib/editor/stores/data/symbols'
+  import { hoveredBlock } from 'primo-editor/stores/app/misc'
+  import site from 'primo-editor/stores/data/site'
+  import sections from 'primo-editor/stores/data/sections'
+  import symbols from 'primo-editor/stores/data/symbols'
   import Icon from '@iconify/svelte'
-  import { Symbol } from '$lib/editor/const'
+  import { Symbol } from 'primo-editor/const'
   import Sidebar_Symbol from './Sidebar_Symbol.svelte'
   import {
     symbols as symbol_actions,
     active_page,
-  } from '$lib/editor/stores/actions'
+  } from 'primo-editor/stores/actions'
   import { v4 as uuidv4 } from 'uuid'
   import { validate_symbol } from '$lib/converter'
 

@@ -9,6 +9,4 @@ export const emails = writable([])
 
 export const workspaces = writable([])
 
-
-
 export const mouse_position = writable({ x: null, y: null })

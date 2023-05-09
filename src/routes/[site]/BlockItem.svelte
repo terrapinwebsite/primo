@@ -5,12 +5,12 @@
   import {
     getComponentData,
     getSymbolUseInfo,
-  } from '$lib/editor/stores/helpers'
+  } from 'primo-editor/stores/helpers'
 
-  import IFrame from '$lib/editor/views/modal/ComponentLibrary/IFrame.svelte'
-  import { processCode, processCSS } from '$lib/editor/utils'
-  import { code as siteCode } from '$lib/editor/stores/data/site'
-  import { code as pageCode } from '$lib/editor/stores/app/activePage'
+  import IFrame from 'primo-editor/views/modal/ComponentLibrary/IFrame.svelte'
+  import { processCode, processCSS } from 'primo-editor/utils'
+  import { code as siteCode } from 'primo-editor/stores/data/site'
+  import { code as pageCode } from 'primo-editor/stores/app/activePage'
 
   export let symbol
   export let name = symbol.name || ''

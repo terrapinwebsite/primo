@@ -1,12 +1,9 @@
 <script>
   import { onDestroy } from 'svelte'
   import { browser } from '$app/environment'
-  import Primo, { stores } from '$lib/editor'
-  import modal from '$lib/editor/stores/app/modal'
+  import Primo, { stores } from 'primo-editor'
+  // import modal from 'primo-editor/stores/app/modal'
   import { page } from '$app/stores'
-  import Sidebar from './Sidebar.svelte'
-  import IconButton from '$lib/components/IconButton.svelte'
-  import HSplitPane from '$lib/editor/views/modal/ComponentEditor/HSplitPane.svelte'
 
   export let data
 
@@ -40,31 +37,13 @@
   let siteLocked = false
 
   onDestroy(() => {
-    if (siteLocked) modal.hide()
+    // if (siteLocked) modal.hide()
   })
 </script>
 
-<main>
-  <HSplitPane bind:leftPaneSize bind:rightPaneSize>
-    <div slot="left">
-      {#if showing_sidebar}
-        <Sidebar />
-      {:else}
-        <div class="expand primo-reset">
-          <IconButton
-            on:click={reset}
-            icon="tabler:layout-sidebar-left-expand"
-          />
-        </div>
-      {/if}
-    </div>
-    <div slot="right">
-      <slot />
-    </div>
-  </HSplitPane>
-</main>
-
 <Primo {data} page_id={$page.params.page} />
+
+<slot />
 
 <div id="app-version">
   <!-- <span>primo v{primo.version}</span> -->
